@@ -1,17 +1,33 @@
 package com.example.junitproject.domain;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.jdbc.Sql;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 @DataJpaTest // DB와 관련된 컴포넌트만 메모리에 로딩
 class BookRepositoryTest {
 
     @Autowired
     private BookRepository bookRepository;
+
+//    @BeforeAll // 테스트 시작 전 한번만 실행
+    @BeforeEach // 각 테스트 시작 전 한번씩 실행
+    public void 데이터준비() {
+        String title = "junit5";
+        String author = "코엔";
+        Book book = Book.builder()
+                .title(title)
+                .author(author)
+                .build();
+        bookRepository.save(book);
+    }
 
     // 1. 책 등록
     @Test
@@ -34,10 +50,50 @@ class BookRepositoryTest {
     }
 
     // 2. 책 목록보기
+    @Test
+    void 책목록보기_test() {
+        // given
+        String title = "junit5";
+        String author = "코엔";
+
+        // when
+        List<Book> booksPS = bookRepository.findAll();
+
+        // then
+        assertEquals(title, booksPS.get(0).getTitle());
+        assertEquals(author, booksPS.get(0).getAuthor());
+    }
 
     // 3. 책 한건 보기
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    void 책한건보기_test() {
+        // given
+        String title = "junit5";
+        String author = "코엔";
 
-    // 4. 책 수정
+        // when
+        Book bookPS = bookRepository.findById(1L).get();
 
-    // 5. 책 삭제
+        // then
+        assertEquals(title, bookPS.getTitle());
+        assertEquals(author, bookPS.getAuthor());
+    }
+
+    // 4. 책 삭제
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    void 책삭제_test() {
+        // given
+        Long id = 1L;
+
+        // when
+        bookRepository.deleteById(id);
+
+        // then
+        assertFalse(bookRepository.findById(id).isPresent());
+    }
+
+    // 5. 책 수정
+
 }
