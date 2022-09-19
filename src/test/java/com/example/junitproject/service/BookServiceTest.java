@@ -3,19 +3,26 @@ package com.example.junitproject.service;
 import com.example.junitproject.domain.BookRepository;
 import com.example.junitproject.dto.BookResponseDto;
 import com.example.junitproject.dto.BookSaveRequestDto;
-import com.example.junitproject.util.MailSenderStub;
-import org.junit.jupiter.api.Assertions;
+import com.example.junitproject.util.MailSender;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
-@DataJpaTest
+@ExtendWith(MockitoExtension.class) // 가짜 메모리 환경
 class BookServiceTest {
 
-    @Autowired
+    @InjectMocks
+    private BookService bookService;
+    @Mock
     private BookRepository bookRepository;
+    @Mock
+    private MailSender mailSender;
 
     // 단점 ! -> Service만 테스트하고싶은데 Repository Layer 도 메모리에 올라감! 무거워진다.
     @Test
@@ -25,18 +32,17 @@ class BookServiceTest {
         dto.setTitle("junit5");
         dto.setAuthor("Coen90");
 
-        // stub
-        MailSenderStub mailSenderStub = new MailSenderStub();
-        // 가짜로 bookRepository 만들기!!
+        // stub (가설)
+        when(bookRepository.save(any())).thenReturn(dto.toEntity());
+        when(mailSender.send()).thenReturn(true);
 
         // when
-        BookService bookService = new BookService(bookRepository, mailSenderStub);
+//        BookService bookService = new BookService(bookRepository, mailSenderStub);
         BookResponseDto bookRespDto = bookService.addBook(dto);
 
         // then
-        assertEquals(dto.getTitle(), bookRespDto.getTitle());
-        assertEquals(dto.getAuthor(), bookRespDto.getAuthor());
-
+        assertThat(dto.getTitle()).isEqualTo(bookRespDto.getTitle());
+        assertThat(dto.getAuthor()).isEqualTo(bookRespDto.getAuthor());
     }
 
 }
