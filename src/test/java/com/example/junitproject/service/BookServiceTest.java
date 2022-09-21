@@ -12,7 +12,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,9 +80,10 @@ class BookServiceTest {
     void getBook() {
         // given
         Long id = 1L;
+        
+        //stub
         Book book = new Book(1L, "junit강의", "메타코딩");
         Optional<Book> bookOP = Optional.of(book);
-        //stub
         when(bookRepository.findById(id)).thenReturn(bookOP);
 
         // when
@@ -92,6 +92,27 @@ class BookServiceTest {
         // then
         assertThat(bookResponseDto.getTitle()).isEqualTo(book.getTitle());
         assertThat(bookResponseDto.getAuthor()).isEqualTo(book.getAuthor());
+    }
+
+    @Test
+    void editBook() {
+        // given
+        Long id = 1L;
+        BookSaveRequestDto dto = new BookSaveRequestDto();
+        dto.setTitle("spring 강의");
+        dto.setAuthor("변경작가");
+
+        // stub
+        Book book = new Book(1L, "junit강의", "메타코딩");
+        Optional<Book> bookOP = Optional.of(book);
+        when(bookRepository.findById(id)).thenReturn(bookOP);
+
+        // when
+        BookResponseDto bookResponseDto = bookService.editBook(id, dto);
+
+        // then
+        assertThat(bookResponseDto.getTitle()).isEqualTo(dto.getTitle());
+        assertThat(bookResponseDto.getAuthor()).isEqualTo(dto.getAuthor());
     }
 
 }
