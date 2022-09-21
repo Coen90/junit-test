@@ -1,10 +1,9 @@
 package com.example.junitproject.domain;
 
-import com.example.junitproject.dto.BookResponseDto;
+import com.example.junitproject.dto.response.BookResponseDto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.context.annotation.Primary;
 
 import javax.persistence.*;
 
