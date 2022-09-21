@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,6 +75,23 @@ class BookServiceTest {
         assertThat(dtos.get(0).getAuthor()).isEqualTo("metacoding");
         assertThat(dtos.get(1).getTitle()).isEqualTo("spring강의");
         assertThat(dtos.get(1).getAuthor()).isEqualTo("youtube");
+    }
+
+    @Test
+    void getBook() {
+        // given
+        Long id = 1L;
+        Book book = new Book(1L, "junit강의", "메타코딩");
+        Optional<Book> bookOP = Optional.of(book);
+        //stub
+        when(bookRepository.findById(id)).thenReturn(bookOP);
+
+        // when
+        BookResponseDto bookResponseDto = bookService.getBook(id);
+
+        // then
+        assertThat(bookResponseDto.getTitle()).isEqualTo(book.getTitle());
+        assertThat(bookResponseDto.getAuthor()).isEqualTo(book.getAuthor());
     }
 
 }
