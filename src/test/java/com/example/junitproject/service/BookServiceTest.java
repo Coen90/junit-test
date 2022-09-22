@@ -2,6 +2,7 @@ package com.example.junitproject.service;
 
 import com.example.junitproject.domain.Book;
 import com.example.junitproject.domain.BookRepository;
+import com.example.junitproject.web.dto.response.BookListResponseDto;
 import com.example.junitproject.web.dto.response.BookResponseDto;
 import com.example.junitproject.web.dto.request.BookSaveRequestDto;
 import com.example.junitproject.util.MailSender;
@@ -60,20 +61,20 @@ class BookServiceTest {
         when(bookRepository.findAll()).thenReturn(books);
 
         // when (실행)
-        List<BookResponseDto> dtos = bookService.getBookList();
+        BookListResponseDto dtos = bookService.getBookList();
         
         // print
-        dtos.stream().forEach((dto) -> {
+        dtos.getItems().stream().forEach((dto) -> {
             System.out.println("dto.getId() = " + dto.getId());
             System.out.println("dto.getTitle() = " + dto.getTitle());
             System.out.println();
         });
 
         // then (검증)
-        assertThat(dtos.get(0).getTitle()).isEqualTo("junit강의");
-        assertThat(dtos.get(0).getAuthor()).isEqualTo("metacoding");
-        assertThat(dtos.get(1).getTitle()).isEqualTo("spring강의");
-        assertThat(dtos.get(1).getAuthor()).isEqualTo("youtube");
+        assertThat(dtos.getItems().get(0).getTitle()).isEqualTo("junit강의");
+        assertThat(dtos.getItems().get(0).getAuthor()).isEqualTo("metacoding");
+        assertThat(dtos.getItems().get(1).getTitle()).isEqualTo("spring강의");
+        assertThat(dtos.getItems().get(1).getAuthor()).isEqualTo("youtube");
     }
 
     @Test

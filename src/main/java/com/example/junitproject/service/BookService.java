@@ -2,6 +2,7 @@ package com.example.junitproject.service;
 
 import com.example.junitproject.domain.Book;
 import com.example.junitproject.domain.BookRepository;
+import com.example.junitproject.web.dto.response.BookListResponseDto;
 import com.example.junitproject.web.dto.response.BookResponseDto;
 import com.example.junitproject.web.dto.request.BookSaveRequestDto;
 import com.example.junitproject.util.MailSender;
@@ -33,7 +34,7 @@ public class BookService {
     }
 
     // 2. 책 목록보기
-    public List<BookResponseDto> getBookList() {
+    public BookListResponseDto getBookList() {
         List<BookResponseDto> dtos = bookRepository.findAll().stream()
                 .map(Book::toDto)
                 .collect(Collectors.toList());
@@ -43,7 +44,9 @@ public class BookService {
             System.out.println("dto.getTitle() = " + dto.getTitle());
         });
 
-        return dtos;
+        BookListResponseDto bookListResponseDto = BookListResponseDto.builder().items(dtos).build();
+
+        return bookListResponseDto;
     }
 
     // 3. 책한권보기
