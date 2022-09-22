@@ -47,6 +47,13 @@ public class BookApiController { // 컴포지션 = has 관계
         return new ResponseEntity<>(CommonResponseDto.builder().code(1).msg("글 저장 성공").body(bookResponseDto).build(), HttpStatus.CREATED); // 201 == insert
     }
 
+    @PostMapping("/api/v2/book")
+    public ResponseEntity<?> saveBookV2(@RequestBody @Valid BookSaveRequestDto bookSaveRequestDto, BindingResult bindingResult) {
+
+        BookResponseDto bookResponseDto = bookService.addBook(bookSaveRequestDto);
+        return new ResponseEntity<>(CommonResponseDto.builder().code(1).msg("글 저장 성공").body(bookResponseDto).build(), HttpStatus.CREATED); // 201 == insert
+    }
+
     // 2. 책 목록 보기
     @GetMapping("/api/v1/books")
     public ResponseEntity<?> getBookList() {
