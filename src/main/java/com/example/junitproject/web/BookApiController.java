@@ -1,10 +1,10 @@
 package com.example.junitproject.web;
 
+import com.example.junitproject.service.BookService;
 import com.example.junitproject.web.dto.request.BookSaveRequestDto;
 import com.example.junitproject.web.dto.response.BookListResponseDto;
 import com.example.junitproject.web.dto.response.BookResponseDto;
 import com.example.junitproject.web.dto.response.CommonResponseDto;
-import com.example.junitproject.service.BookService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
