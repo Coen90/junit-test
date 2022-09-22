@@ -73,8 +73,23 @@ public class BookApiController { // 컴포지션 = has 관계
     }
 
     // 5. 책 수정하기
-    public ResponseEntity<?> editBook() {
-        return null;
+    @PutMapping("/api/v1/book/{itemId}")
+    public ResponseEntity<?> editBook(@PathVariable Long itemId, @RequestBody @Valid BookSaveRequestDto bookSaveRequestDto, BindingResult bindingResult) {
+
+        if(bindingResult.hasErrors()) {
+            Map<String, String> errorMap = new HashMap<>();
+            for (FieldError fe : bindingResult.getFieldErrors()) {
+                errorMap.put(fe.getField(), fe.getDefaultMessage());
+            }
+            log.debug("==========================================================");
+            System.out.println("errorMap = " + errorMap.toString());
+            log.debug("==========================================================");
+
+            throw new RuntimeException(errorMap.toString());
+        }
+
+        BookResponseDto bookResponseDto = bookService.editBook(itemId, bookSaveRequestDto);
+        return new ResponseEntity<>(CommonResponseDto.builder().code(1).msg("글 수정 성공").body(bookResponseDto).build(), HttpStatus.OK);
     }
 
 }
