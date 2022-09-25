@@ -19,9 +19,6 @@ import static org.assertj.core.api.Assertions.*;
 class BookApiControllerTest {
 
     @Autowired
-    private BookService bookService;
-
-    @Autowired
     private TestRestTemplate rt;
 
     private static ObjectMapper om;
