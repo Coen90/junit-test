@@ -104,4 +104,27 @@ class BookApiControllerTest {
         assertThat(bookSaveRequestDto.getAuthor()).isEqualTo(author);
     }
 
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    void getBook_test() {
+        // given
+        Long id = 1L;
+
+        // when
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = rt.exchange("/api/v1/book/1", HttpMethod.GET, request, String.class);
+
+        System.out.println(response.getBody());
+
+        // then
+        DocumentContext dc = JsonPath.parse(response.getBody());
+        Integer code = dc.read("$.code");
+        String title = dc.read("$.body.title");
+        String author = dc.read("$.body.author");
+
+        assertThat(code).isEqualTo(1);
+        assertThat(title).isEqualTo("junit5");
+        assertThat(author).isEqualTo("코엔");
+
+    }
 }
