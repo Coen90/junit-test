@@ -112,7 +112,7 @@ class BookApiControllerTest {
 
         // when
         HttpEntity<String> request = new HttpEntity<>(null, headers);
-        ResponseEntity<String> response = rt.exchange("/api/v1/book/1", HttpMethod.GET, request, String.class);
+        ResponseEntity<String> response = rt.exchange("/api/v1/book/" + id, HttpMethod.GET, request, String.class);
 
         System.out.println(response.getBody());
 
@@ -125,6 +125,24 @@ class BookApiControllerTest {
         assertThat(code).isEqualTo(1);
         assertThat(title).isEqualTo("junit5");
         assertThat(author).isEqualTo("코엔");
+
+    }
+
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    void removeBook_test() {
+        // given
+        Long id = 1L;
+
+        // when
+        HttpEntity<String> request = new HttpEntity<>(null, headers);
+        ResponseEntity<String> response = rt.exchange("/api/v1/book/" + id, HttpMethod.DELETE, request, String.class);
+
+        // then
+        System.out.println("response.getStatusCode() = " + response.getStatusCode());
+        DocumentContext dc = JsonPath.parse(response.getBody());
+        Integer code = dc.read("$.code");
+        assertThat(code).isEqualTo(1);
 
     }
 }
