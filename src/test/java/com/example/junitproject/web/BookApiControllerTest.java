@@ -2,12 +2,11 @@ package com.example.junitproject.web;
 
 import com.example.junitproject.domain.Book;
 import com.example.junitproject.domain.BookRepository;
-import com.example.junitproject.service.BookService;
 import com.example.junitproject.web.dto.request.BookSaveRequestDto;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,10 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
+@ActiveProfiles("dev")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BookApiControllerTest {
 
@@ -143,6 +144,33 @@ class BookApiControllerTest {
         DocumentContext dc = JsonPath.parse(response.getBody());
         Integer code = dc.read("$.code");
         assertThat(code).isEqualTo(1);
+
+    }
+
+    @Sql("classpath:db/tableInit.sql")
+    @Test
+    void editBook_test() throws JsonProcessingException {
+        // given
+        Long id = 1L;
+        BookSaveRequestDto bookSaveRequestDto = new BookSaveRequestDto();
+        bookSaveRequestDto.setTitle("spring");
+        bookSaveRequestDto.setAuthor("Coen");
+
+        String body = om.writeValueAsString(bookSaveRequestDto);
+
+        // when
+        HttpEntity<String> request = new HttpEntity<>(body, headers);
+        ResponseEntity<String> response = rt.exchange("/api/v1/book/" + id, HttpMethod.PUT, request, String.class);
+
+//        System.out.println("response.getBody() = " + response.getBody());
+//        System.out.println("response.getStatusCodeValue() = " + response.getStatusCodeValue());
+
+        // then
+        DocumentContext dc = JsonPath.parse(response.getBody());
+        String title = dc.read("$.body.title");
+        String author = dc.read("$.body.author");
+        assertThat(title).isEqualTo(bookSaveRequestDto.getTitle());
+        assertThat(author).isEqualTo(bookSaveRequestDto.getAuthor());
 
     }
 }
