@@ -33,6 +33,7 @@ public class BookApiController { // 컴포지션 = has 관계
             for (FieldError fe : bindingResult.getFieldErrors()) {
                 errorMap.put(fe.getField(), fe.getDefaultMessage());
             }
+            
             log.debug("==========================================================");
             System.out.println("errorMap = " + errorMap.toString());
             log.debug("==========================================================");
