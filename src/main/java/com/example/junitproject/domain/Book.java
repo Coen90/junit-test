@@ -33,7 +33,6 @@ public class Book {
         this.title = title;
         this.author = author;
     }
-
     public BookResponseDto toDto() {
         return BookResponseDto.builder()
                 .id(id)
