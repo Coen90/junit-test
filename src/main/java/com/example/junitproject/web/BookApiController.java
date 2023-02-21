@@ -34,9 +34,7 @@ public class BookApiController { // 컴포지션 = has 관계
                 errorMap.put(fe.getField(), fe.getDefaultMessage());
             }
             
-            log.debug("==========================================================");
             System.out.println("errorMap = " + errorMap.toString());
-            log.debug("==========================================================");
 
             throw new RuntimeException(errorMap.toString());
         }
